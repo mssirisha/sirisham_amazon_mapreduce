@@ -213,7 +213,7 @@ public class AmazonProductDescAnalysis extends Configured implements Tool {
 				while (itr.hasNext()) {
 					String str=itr.next().toString();
 					if (patternsToSkip.contains(str)) {
-						LOG.warn("Skipping value: "+str)
+						LOG.warn("Skipping value: "+str);
 					continue;
 					}
 					else{
