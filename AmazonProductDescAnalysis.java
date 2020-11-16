@@ -52,8 +52,8 @@ public class AmazonProductDescAnalysis extends Configured implements Tool {
 
 	@Override
 	public int run(String[] args) throws Exception {
-		if (args.length != 1) {
-			System.err.println("Need 1 argument (hdfs output path), got: " + args.length);
+		if (args.length > 2) {
+			System.err.println("Need 2 arguments (hdfs output path), got: " + args.length);
 			return -1;
 		}
 
