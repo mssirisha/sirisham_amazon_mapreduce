@@ -9,6 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.net.URI;
 
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
