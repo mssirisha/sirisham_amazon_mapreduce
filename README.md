@@ -11,7 +11,8 @@ Go into the repo directory. In this case: cd sirisham_amazon_mapreduce
 
 Make a "build" directory (if it does not already exist): mkdir build
 
-Compile the java code (all one line). You may see some warnings--that' ok. javac -cp /opt/cloudera/parcels/CDH/lib/hadoop/client/*:/opt/cloudera/parcels/CDH/lib/hbase/* AmazonProductDescAnalysis.java -d build -Xlint
+Compile the java code (all one line). You may see some warnings--that' ok. 
+javac -cp /opt/cloudera/parcels/CDH/lib/hadoop/client/*:/opt/cloudera/parcels/CDH/lib/hbase/* AmazonProductDescAnalysis.java -d build -Xlint
 
 Now we wrap up our code into a Java "jar" file: jar -cvf process_product_desc.jar -C build/ .
 
