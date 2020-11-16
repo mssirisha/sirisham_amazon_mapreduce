@@ -122,7 +122,8 @@ public class AmazonProductDescAnalysis extends Configured implements Tool {
 		private boolean caseSensitive = false;
 		// This setup method is called once before the task is started
 		@Override
-		protected void setup(Context context) {
+		protected void setup(Context context) throws IOException,
+        InterruptedException{
 			parser = new JsonParser();
 			rowsProcessed = context.getCounter("AmazonProductDescAnalysis", "Rows Processed");
 			if (context.getInputSplit() instanceof FileSplit) {
