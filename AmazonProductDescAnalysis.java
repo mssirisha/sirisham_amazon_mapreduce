@@ -59,7 +59,8 @@ public class AmazonProductDescAnalysis extends Configured implements Tool {
 		// Now we create and configure a map-reduce "job"
 		Job job = Job.getInstance(getConf(), "AmazonProductDescAnalysis");
 		job.setJarByClass(AmazonProductDescAnalysis.class);
-
+		job.addCacheFile(new Path(args[0]).toUri());
+		
 		// By default we are going to can every row in the table
 		Scan scan = new Scan();
 		scan.setCaching(500); // 1 is the default in Scan, which will be bad for MapReduce jobs
@@ -80,7 +81,7 @@ public class AmazonProductDescAnalysis extends Configured implements Tool {
 		job.setReducerClass(MapReduceReducer.class);
 
 		// For file output (text -> number)
-		FileOutputFormat.setOutputPath(job, new Path(args[0])); // The first argument must be an output path
+		FileOutputFormat.setOutputPath(job, new Path(args[1])); // The second argument must be an output path
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(IntWritable.class);
 
@@ -152,15 +153,17 @@ public class AmazonProductDescAnalysis extends Configured implements Tool {
 				System.out.println(
 						"Product description words coung after removing duplicates and before removing stopwords: "
 								+ allWords.size());
-				/*URL path = AmazonProductDescAnalysis.class.getClass().getResource("/stopwords.txt");
+				URI[] localPaths = context.getCacheFiles();
+				
+				//URL path = Path(args[1])+"/stopwords.txt";
 
-				List<String> stopwords = Files.readAllLines(Paths.get(path.getPath().toString().substring(1)));
+				List<String> stopwords = Files.readAllLines(localPaths[0].getPath());
 
 				allWords.removeAll(stopwords);
 
 				System.out.println(
 						"Product description words count after removing duplicates and stopwords: " + allWords.size());
-				*/
+				
 
 				Iterator itr = allWords.iterator();
 				while (itr.hasNext()) {
