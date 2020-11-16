@@ -61,7 +61,7 @@ public class AmazonProductDescAnalysis extends Configured implements Tool {
 		Job job = Job.getInstance(getConf(), "AmazonProductDescAnalysis");
 		job.setJarByClass(AmazonProductDescAnalysis.class);
 		job.addCacheFile(new Path(args[0]).toUri());
-		
+		LOG.info(args[0]);
 		// By default we are going to can every row in the table
 		Scan scan = new Scan();
 		scan.setCaching(500); // 1 is the default in Scan, which will be bad for MapReduce jobs
@@ -155,7 +155,8 @@ public class AmazonProductDescAnalysis extends Configured implements Tool {
 						"Product description words coung after removing duplicates and before removing stopwords: "
 								+ allWords.size());
 				URI[] localPaths = context.getCacheFiles();
-				
+				LOG.info(localPaths);
+				LOG.info(localPaths[0].getPath());
 				//URL path = Path(args[1])+"/stopwords.txt";
 
 				List<String> stopwords = Files.readAllLines(Paths.get(localPaths[0].getPath()));
