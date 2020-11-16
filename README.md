@@ -1,7 +1,7 @@
 # sirisham_amazon_mapreduce
 Java code for map reduce on dsba-hadoop.uncc.edu. There are 14,741,571 amazon products and 153,871,242 amazon product reviews.
 
-# Executing AmazonProductDescAnalysis - To find topp 100 words in Product description after parsing out HTML and removing stopwords
+# Executing AmazonProductDescAnalysis - To find top 100 words in Product description after parsing out HTML and removing stopwords
  
 
 Log into dsba-hadoop.uncc.edu using ssh
