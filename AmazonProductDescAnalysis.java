@@ -158,7 +158,7 @@ public class AmazonProductDescAnalysis extends Configured implements Tool {
 				
 				//URL path = Path(args[1])+"/stopwords.txt";
 
-				List<String> stopwords = Files.readAllLines(localPaths[0].getPath());
+				List<String> stopwords = Files.readAllLines(Paths.get(localPaths[0].getPath()));
 
 				allWords.removeAll(stopwords);
 
