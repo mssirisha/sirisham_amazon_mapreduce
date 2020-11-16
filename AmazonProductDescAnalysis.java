@@ -208,7 +208,7 @@ public class AmazonProductDescAnalysis extends Configured implements Tool {
 				*/
 				Iterator itr = allWords.iterator();
 				while (itr.hasNext()) {
-					if (patternsToSkip.contains(itr.hasNext())) {
+					if (patternsToSkip.contains(itr.next().toString())) {
 					continue;
 					}
 					else{
