@@ -146,6 +146,9 @@ public class AmazonProductDescAnalysis extends Configured implements Tool {
 			while ((pattern = fis.readLine()) != null) {
 			  patternsToSkip.add(pattern);
 			}
+			LOG.warn("Patterns skipping size:"+ patternsToSkip.size());
+			LOG.warn("Patterns skipping:"+ patternsToSkip.toString());
+			
 		  } catch (IOException ioe) {
 			System.err.println("Caught exception while parsing the cached file '"
 				+ patternsURI + "' : " + StringUtils.stringifyException(ioe));
@@ -208,11 +211,13 @@ public class AmazonProductDescAnalysis extends Configured implements Tool {
 				*/
 				Iterator itr = allWords.iterator();
 				while (itr.hasNext()) {
-					if (patternsToSkip.contains(itr.next().toString())) {
+					String str=itr.next().toString();
+					if (patternsToSkip.contains(str)) {
+						LOG.warn("Skipping value: "+str)
 					continue;
 					}
 					else{
-					context.write(new Text(itr.next().toString()), one);
+					context.write(new Text(str), one);
 					}
 				}
 
