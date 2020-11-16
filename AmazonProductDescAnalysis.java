@@ -152,7 +152,7 @@ public class AmazonProductDescAnalysis extends Configured implements Tool {
 				System.out.println(
 						"Product description words coung after removing duplicates and before removing stopwords: "
 								+ allWords.size());
-				URL path = AmazonProductDescAnalysis.class.getClass().getResource("/stopwords.txt");
+				/*URL path = AmazonProductDescAnalysis.class.getClass().getResource("/stopwords.txt");
 
 				List<String> stopwords = Files.readAllLines(Paths.get(path.getPath().toString().substring(1)));
 
@@ -160,6 +160,7 @@ public class AmazonProductDescAnalysis extends Configured implements Tool {
 
 				System.out.println(
 						"Product description words count after removing duplicates and stopwords: " + allWords.size());
+				*/
 
 				Iterator itr = allWords.iterator();
 				while (itr.hasNext()) {
