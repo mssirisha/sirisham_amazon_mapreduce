@@ -155,8 +155,7 @@ public class AmazonProductDescAnalysis extends Configured implements Tool {
 						"Product description words coung after removing duplicates and before removing stopwords: "
 								+ allWords.size());
 				URI[] localPaths = context.getCacheFiles();
-				LOG.info(localPaths);
-				LOG.info(localPaths[0].getPath());
+				LOG.info( "Path - " + localPaths[0].getPath());
 				//URL path = Path(args[1])+"/stopwords.txt";
 
 				List<String> stopwords = Files.readAllLines(Paths.get(localPaths[0].getPath()));
