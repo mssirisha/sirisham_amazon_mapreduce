@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 import org.apache.hadoop.util.StringUtils;
+import org.apache.hadoop.conf.Configuration;
 
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
