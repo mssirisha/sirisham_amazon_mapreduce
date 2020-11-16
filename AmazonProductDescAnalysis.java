@@ -211,7 +211,9 @@ public class AmazonProductDescAnalysis extends Configured implements Tool {
 					if (patternsToSkip.contains(itr.hasNext())) {
 					continue;
 					}
+					else{
 					context.write(new Text(itr.next().toString()), one);
+					}
 				}
 
 				// Now we'll iterate through every top-level "key" in the JSON structure...
