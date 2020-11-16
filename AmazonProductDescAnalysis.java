@@ -9,7 +9,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.net.URI;
+import java.util.HashSet;
+import java.util.Set;
+import org.apache.hadoop.mapreduce.lib.input.FileSplit;
+import org.apache.hadoop.util.StringUtils;
 
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
@@ -52,16 +60,23 @@ public class AmazonProductDescAnalysis extends Configured implements Tool {
 
 	@Override
 	public int run(String[] args) throws Exception {
-		if (args.length > 2) {
-			System.err.println("Need 2 arguments (hdfs output path), got: " + args.length);
+		if (args.length != 1) {
+			System.err.println("Need 1 argument (hdfs output path), got: " + args.length);
 			return -1;
 		}
 
 		// Now we create and configure a map-reduce "job"
 		Job job = Job.getInstance(getConf(), "AmazonProductDescAnalysis");
 		job.setJarByClass(AmazonProductDescAnalysis.class);
-		job.addCacheFile(new Path(args[0]).toUri());
-		LOG.info(args[0]);
+		for (int i = 0; i < args.length; i += 1) {
+			  if ("-skip".equals(args[i])) {
+				job.getConfiguration().setBoolean("wordcount.skip.patterns", true);
+				i += 1;
+				job.addCacheFile(new Path(args[i]).toUri());
+				// this demonstrates logging
+				LOG.info("Added file to the distributed cache: " + args[i]);
+			  }
+			}
 		// By default we are going to can every row in the table
 		Scan scan = new Scan();
 		scan.setCaching(500); // 1 is the default in Scan, which will be bad for MapReduce jobs
@@ -82,7 +97,7 @@ public class AmazonProductDescAnalysis extends Configured implements Tool {
 		job.setReducerClass(MapReduceReducer.class);
 
 		// For file output (text -> number)
-		FileOutputFormat.setOutputPath(job, new Path(args[1])); // The second argument must be an output path
+		FileOutputFormat.setOutputPath(job, new Path(args[0])); // The first argument must be an output path
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(IntWritable.class);
 
@@ -101,12 +116,37 @@ public class AmazonProductDescAnalysis extends Configured implements Tool {
 
 		private Counter rowsProcessed; // This will count number of products processed
 		private JsonParser parser; // This gson parser will help us parse JSON
-
+		private String input;
+		private Set<String> patternsToSkip = new HashSet<String>();
 		// This setup method is called once before the task is started
 		@Override
 		protected void setup(Context context) {
 			parser = new JsonParser();
 			rowsProcessed = context.getCounter("AmazonProductDescAnalysis", "Rows Processed");
+			if (context.getInputSplit() instanceof FileSplit) {
+			  this.input = ((FileSplit) context.getInputSplit()).getPath().toString();
+			} else {
+			  this.input = context.getInputSplit().toString();
+			}
+			Configuration config = context.getConfiguration();
+		    this.caseSensitive = config.getBoolean("wordcount.case.sensitive", false);
+		    if (config.getBoolean("wordcount.skip.patterns", false)) {
+		  	  URI[] localPaths = context.getCacheFiles();
+			parseSkipFile(localPaths[0]);
+		    }
+		}
+		private void parseSkipFile(URI patternsURI) {
+		  LOG.info("Added file to the distributed cache: " + patternsURI);
+		  try {
+			BufferedReader fis = new BufferedReader(new FileReader(new File(patternsURI.getPath()).getName()));
+			String pattern;
+			while ((pattern = fis.readLine()) != null) {
+			  patternsToSkip.add(pattern);
+			}
+		  } catch (IOException ioe) {
+			System.err.println("Caught exception while parsing the cached file '"
+				+ patternsURI + "' : " + StringUtils.stringifyException(ioe));
+		  }
 		}
 
 		// This "map" method is called with every row scanned.
@@ -154,20 +194,20 @@ public class AmazonProductDescAnalysis extends Configured implements Tool {
 				System.out.println(
 						"Product description words coung after removing duplicates and before removing stopwords: "
 								+ allWords.size());
-				URI[] localPaths = context.getCacheFiles();
-				LOG.info( "Path - " + localPaths[0].getPath());
-				//URL path = Path(args[1])+"/stopwords.txt";
+				/*URL path = AmazonProductDescAnalysis.class.getClass().getResource("/stopwords.txt");
 
-				List<String> stopwords = Files.readAllLines(Paths.get("/user/smanam/amazonProductDesc/input/stopwords.txt"));
+				List<String> stopwords = Files.readAllLines(Paths.get(path.getPath().toString().substring(1)));
 
 				allWords.removeAll(stopwords);
 
 				System.out.println(
 						"Product description words count after removing duplicates and stopwords: " + allWords.size());
-				
-
+				*/
 				Iterator itr = allWords.iterator();
 				while (itr.hasNext()) {
+					if (patternsToSkip.contains(itr.hasNext())) {
+					continue;
+					}
 					context.write(new Text(itr.next().toString()), one);
 				}
 
