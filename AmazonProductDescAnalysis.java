@@ -119,6 +119,7 @@ public class AmazonProductDescAnalysis extends Configured implements Tool {
 		private JsonParser parser; // This gson parser will help us parse JSON
 		private String input;
 		private Set<String> patternsToSkip = new HashSet<String>();
+		private boolean caseSensitive = false;
 		// This setup method is called once before the task is started
 		@Override
 		protected void setup(Context context) {
