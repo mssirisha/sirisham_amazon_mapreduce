@@ -169,7 +169,7 @@ public class AmazonProductDescAnalysis extends Configured implements Tool {
 				JsonObject jsonObject = jsonTree.getAsJsonObject();
 
 				String description = jsonObject.get("description").getAsString();
-				System.out.println("Product description before cleaning: " + description);
+				//System.out.println("Product description before cleaning: " + description);
 
 				if (description.startsWith("<")) {
 					String pattern = ".*alt=\"([^\"]*)\".*";
@@ -185,21 +185,21 @@ public class AmazonProductDescAnalysis extends Configured implements Tool {
 				// .replaceAll("\\d\\.", "").replaceAll("( =^ ^=)", "").replaceAll("(=^ ^=)",
 				// "");
 
-				System.out.println("Product description after cleaning:" + description);
+				//System.out.println("Product description after cleaning:" + description);
 
 				ArrayList<String> allWords = Stream.of(description.toLowerCase().split("\\s+")).map(String::trim)
 						.collect(Collectors.toCollection(ArrayList<String>::new));
 
-				System.out.println(
-						"Product description words count before removing duplicates and stopwords: " + allWords.size());
+				//System.out.println(
+				//		"Product description words count before removing duplicates and stopwords: " + allWords.size());
 
 				allWords = Stream.of(description.toLowerCase().split("\\s+")).map(String::trim)
 						.filter(item -> !item.isEmpty()).distinct()
 						.collect(Collectors.toCollection(ArrayList<String>::new));
 
-				System.out.println(
-						"Product description words coung after removing duplicates and before removing stopwords: "
-								+ allWords.size());
+				//System.out.println(
+				//		"Product description words coung after removing duplicates and before removing stopwords: "
+				//				+ allWords.size());
 				/*URL path = AmazonProductDescAnalysis.class.getClass().getResource("/stopwords.txt");
 
 				List<String> stopwords = Files.readAllLines(Paths.get(path.getPath().toString().substring(1)));
